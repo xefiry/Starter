@@ -1,5 +1,18 @@
+import tomllib
+
+
 def main():
-    print("Hello from starter!")
+    with open("config.toml", "rb") as f:
+        data = tomllib.load(f)
+
+    print(data)
+    for entry in data["entry"]:
+        print(entry)
+        args = entry.get("args")
+        print(args)
+        if len(args) > 0:
+            print(type(args[0]))
+        print()
 
 
 if __name__ == "__main__":

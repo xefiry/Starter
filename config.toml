@@ -1,0 +1,59 @@
+[[entry]]
+type = "StartOne"
+name = "One exec - No arg A"
+path = "/some/path"
+exe = "program.exe"
+
+[[entry]]
+type = "StartOne"
+name = "One exec - No arg B"
+path = "/some/path"
+exe = "program.exe"
+args = []
+
+[[entry]]
+type = "StartOne"
+name = "One exec - One arg A"
+path = "/some/path"
+exe = "program.exe"
+args = "arg"
+
+[[entry]]
+type = "StartOne"
+name = "One exec - One arg B"
+path = "/some/path"
+exe = "program.exe"
+args = ["arg"]
+
+[[entry]]
+type = "StartOne"
+name = "One exec - Multiple args"
+path = "/some/path"
+exe = "program.exe"
+args = ["arg1", "arg2"]
+
+[[entry]]
+type = "StarMany"
+name = "Multiple exec - One arg A"
+path = "/some/path"
+exe = "program.exe"
+args = ["argA1", "argB1"]
+
+[[entry]]
+type = "StarMany"
+name = "Multiple exec - One arg B"
+path = "/some/path"
+exe = "program.exe"
+args = [["argA1", "argB1"]]
+
+[[entry]]
+type = "StarMany"
+name = "Multiple exec - Multiple args"
+path = "/some/path"
+exe = "program.exe"
+args = [["argA1", "argA2"], ["argB1", "argB2"]]
+
+[[entry]]
+type = "StarMany"
+name = "Multiple exec - Multiple args"
+exe = "program.exe"
