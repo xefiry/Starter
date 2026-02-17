@@ -23,23 +23,40 @@ class EntryType(Enum):
         else:
             return EntryType.Unknown
 
+    def __str__(self) -> str:
+        if self == EntryType.Unknown:
+            return "Unknown"
+        elif self == EntryType.StartOne:
+            return "StartOne"
+        elif self == EntryType.StartMany:
+            return "StartMany"
+        elif self == EntryType.Stop:
+            return "Stop"
+        else:
+            return "???"
+
 
 class Entry:
     def __init__(
         self,
         type: EntryType,
-        name: str,
+        name: str | None,
     ) -> None:
-        self.type = type  # Mandatory
-        self.name = name  # Optionnal
-        self.path = None  # Mandatory ?
-        self.exe = None  # Mandatory
-        self.args = None  # Mandatory
-        self.cwd = None  # Optionnal
+        self.type: EntryType = type  # Mandatory
+        self.name: str | None = name  # Optionnal
+        self.path: str | None = None  # Optionnal ?
+        self.exe: str = "TODO"  # Mandatory
+        self.args: list | None = []  # Mandatory for StartOne/StartMany
+        self.cwd: str | None = None  # Optionnal
 
     @staticmethod
     def from_toml(data: dict) -> Entry:
-        return Entry(EntryType.from_str(data.get("type")), data.get("name"))
+        type = data.get("type")
+        if type is None:
+            raise Exception("type cannot be empty")
+
+        type = EntryType.from_str(type)
+        return Entry(type, data.get("name"))
 
     def __str__(self) -> str:
         return f"{self.type} - {self.name}"
@@ -50,8 +67,11 @@ def main():
         toml_data = tomllib.load(f)
 
     for data in toml_data["entry"]:
-        entry = Entry.from_toml(data)
-        print(entry)
+        try:
+            entry = Entry.from_toml(data)
+            print(entry)
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":
