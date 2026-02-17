@@ -41,37 +41,62 @@ class Entry:
         self,
         type: EntryType,
         name: str | None,
+        path: str | None,
+        exe: str,
+        args: list | None,
+        cwd: str | None,
     ) -> None:
         self.type: EntryType = type  # Mandatory
         self.name: str | None = name  # Optionnal
-        self.path: str | None = None  # Optionnal ?
-        self.exe: str = "TODO"  # Mandatory
-        self.args: list | None = []  # Mandatory for StartOne/StartMany
-        self.cwd: str | None = None  # Optionnal
+        self.path: str | None = path  # Optionnal ?
+        self.exe: str = exe  # Mandatory
+        self.args: list | None = args  # Mandatory for StartOne/StartMany
+        self.cwd: str | None = cwd  # Optionnal
 
     @staticmethod
     def from_toml(data: dict) -> Entry:
-        type = data.get("type")
-        if type is None:
+        type_str = data.get("type")
+        if type_str is None:
             raise Exception("type cannot be empty")
+        type = EntryType.from_str(type_str)
+        if type == EntryType.Unknown:
+            raise Exception(f"Unknown type : {type_str}")
 
-        type = EntryType.from_str(type)
-        return Entry(type, data.get("name"))
+        name = data.get("name")
+
+        path = data.get("path")
+
+        exe = data.get("exe")
+        if exe is None:
+            raise Exception("exe cannot be empty")
+
+        # TODO: check if empty for StartOne/StartMany
+        args = data.get("args")
+
+        cwd = data.get("cwd")
+
+        return Entry(type, name, path, exe, args, cwd)
 
     def __str__(self) -> str:
-        return f"{self.type} - {self.name}"
+        return f"""type = {self.type}
+name = {self.name}
+path = {self.path}
+exe  = {self.exe}
+args = {self.args}
+cwd  = {self.cwd}
+"""
 
 
 def main():
     with open("config.toml", "rb") as f:
         toml_data = tomllib.load(f)
 
-    for data in toml_data["entry"]:
+    for nb, data in enumerate(toml_data["entry"]):
         try:
             entry = Entry.from_toml(data)
             print(entry)
         except Exception as e:
-            print(e)
+            print(f"Error in rule {nb} : {e}")
 
 
 if __name__ == "__main__":
