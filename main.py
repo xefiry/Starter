@@ -61,7 +61,9 @@ class Entry:
             raise Exception(f"Unknown type : {type_str}")
 
         exe = utils.get_key(data, "exe", str, True)
+
         path = utils.get_key(data, "path", str)
+        path = utils.norm_path(path)  # type: ignore
 
         args = data.get("args")
         if type == EntryType.StartOne:
@@ -70,6 +72,7 @@ class Entry:
             args = utils.process_args_list(args)
 
         cwd = utils.get_key(data, "cwd", str)
+        cwd = utils.norm_path(cwd)  # type: ignore
 
         return Entry(type, exe, path, args, cwd)  # type: ignore
 

@@ -1,3 +1,13 @@
+import os
+
+
+def norm_path(path: str | None) -> str | None:
+    if path is None:
+        return None
+    else:
+        return os.path.normpath(os.path.expandvars(path))
+
+
 def get_key(
     data: dict, key: str, expected_type: type, mandatory: bool = False
 ) -> object:
