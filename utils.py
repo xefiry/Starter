@@ -1,3 +1,19 @@
+def get_key(
+    data: dict, key: str, expected_type: type, mandatory: bool = False
+) -> object:
+    result = data.get(key)
+
+    # if result is mandatory, it can't be None
+    if result is None and mandatory:
+        raise KeyError
+
+    # if result is not of expected type (and not None)
+    if result is not None and not isinstance(result, expected_type):
+        raise TypeError
+
+    return result
+
+
 def is_str_list(input_list: list) -> bool:
     """Check if the given list is a string list
 

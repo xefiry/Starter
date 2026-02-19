@@ -2,6 +2,38 @@ import pytest
 
 import utils
 
+DICT_DATA = {"a": True, "b": 6, "c": 3.14, "d": "xxx"}
+
+
+@pytest.mark.parametrize(
+    "key,type,mandatory,expected",
+    [
+        ("a", bool, True, True),
+        ("b", int, True, 6),
+        ("c", float, True, 3.14),
+        ("c", object, True, 3.14),
+        ("d", str, True, "xxx"),
+        ("e", int, False, None),
+    ],
+)
+def test_get_key(key, type, mandatory, expected):
+    assert utils.get_key(DICT_DATA, key, type, mandatory) == expected
+
+
+@pytest.mark.parametrize(
+    "key,type,expected",
+    [
+        ("a", str, TypeError),
+        ("b", bool, TypeError),
+        ("c", str, TypeError),
+        ("d", float, TypeError),
+        ("e", int, KeyError),
+    ],
+)
+def test_get_key_exceptions(key, type, expected):
+    with pytest.raises(expected):
+        utils.get_key(DICT_DATA, key, type, True)
+
 
 @pytest.mark.parametrize(
     "input,expected",
