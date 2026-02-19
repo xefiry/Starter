@@ -77,12 +77,17 @@ class Entry:
         return Entry(type, exe, path, args, cwd)  # type: ignore
 
     def __str__(self) -> str:
-        return f"""type = {self.type}
-path = {self.path}
-exe  = {self.exe}
-args = {self.args}
-cwd  = {self.cwd}
-"""
+        result = f"type = {self.type}\n"
+        result += f"exe  = {self.exe}\n"
+
+        if self.path is not None:
+            result += f"path = {self.path}\n"
+        if self.args is not None:
+            result += f"args = {self.args}\n"
+        if self.cwd is not None:
+            result += f"cwd  = {self.cwd}\n"
+
+        return result
 
 
 def main():
@@ -94,7 +99,7 @@ def main():
             entry = Entry.from_toml(data)
             print(entry)
         except Exception as e:
-            print(f"Error in rule {nb} : {e}")
+            print(f"Error in rule {nb} : {e}\n")
 
 
 if __name__ == "__main__":
