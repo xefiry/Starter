@@ -5,11 +5,11 @@ def get_key(
 
     # if result is mandatory, it can't be None
     if result is None and mandatory:
-        raise KeyError
+        raise KeyError(f"Key {key} was not found")
 
     # if result is not of expected type (and not None)
     if result is not None and not isinstance(result, expected_type):
-        raise TypeError
+        raise TypeError(f"Key {key} is not {expected_type}")
 
     return result
 
@@ -57,7 +57,7 @@ def process_args(input: list[str] | str | None) -> list[str]:
     elif isinstance(input, list) and is_str_list(input):
         result = input
     else:
-        raise TypeError
+        raise TypeError("Invalid args")
 
     return result
 
@@ -78,7 +78,7 @@ def process_args_list(input) -> list[list[str]]:
     result = []
 
     if not isinstance(input, list):
-        raise TypeError
+        raise TypeError("Invalid args")
 
     for item in input:
         result.append(process_args(item))

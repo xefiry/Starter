@@ -3,6 +3,8 @@ from __future__ import annotations
 import tomllib
 from enum import Enum
 
+import utils
+
 
 class EntryType(Enum):
     Unknown = 0
@@ -55,27 +57,23 @@ class Entry:
 
     @staticmethod
     def from_toml(data: dict) -> Entry:
-        type_str = data.get("type")
-        if type_str is None:
-            raise Exception("type cannot be empty")
+        type_str = str(utils.get_key(data, "type", str, True))
         type = EntryType.from_str(type_str)
         if type == EntryType.Unknown:
             raise Exception(f"Unknown type : {type_str}")
 
-        name = data.get("name")
-
-        path = data.get("path")
-
-        exe = data.get("exe")
-        if exe is None:
-            raise Exception("exe cannot be empty")
-
-        # TODO: check if empty for StartOne/StartMany
         args = data.get("args")
+        if type == EntryType.StartOne:
+            args = utils.process_args(args)
+        elif type == EntryType.StartMany:
+            args = utils.process_args_list(args)
 
-        cwd = data.get("cwd")
+        name = utils.get_key(data, "name", str)
+        path = utils.get_key(data, "path", str)
+        exe = utils.get_key(data, "exe", str, True)
+        cwd = utils.get_key(data, "cwd", str)
 
-        return Entry(type, name, path, exe, args, cwd)
+        return Entry(type, name, path, exe, args, cwd)  # type: ignore
 
     def __str__(self) -> str:
         return f"""type = {self.type}
