@@ -59,8 +59,7 @@ def test_process_args_list(input, expected):
     assert utils.process_args_list(input) == expected
 
 
-# TODO: write it
-@pytest.mark.parametrize("input", [[3], 3, False])
+@pytest.mark.parametrize("input", [[3], 3, False, ["ok", 3]])
 def test_process_args_list_exception(input):
     with pytest.raises(TypeError):
         utils.process_args_list(input)

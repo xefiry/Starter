@@ -46,7 +46,6 @@ def process_args(input: list[str] | str | None) -> list[str]:
     return result
 
 
-# TODO: write it
 def process_args_list(input) -> list[list[str]]:
     """Processes an input into a list of list of arguments usable to loop
     and call by subprocess.run/subprocess.Popen
@@ -60,4 +59,12 @@ def process_args_list(input) -> list[list[str]]:
     process_args_list([["argA1", "argA2"], ["argB1", "argB2"]]) = [["argA1", "argA2"], ["argB1", "argB2"]]
     process_args_list([["argA1", "argA2"], ["argB1"], "argC1"]) = [["argA1", "argA2"], ["argB1"], ["argC1"]]
     """
-    return [["TODO"]]
+    result = []
+
+    if not isinstance(input, list):
+        raise TypeError
+
+    for item in input:
+        result.append(process_args(item))
+
+    return result
