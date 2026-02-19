@@ -1,71 +1,60 @@
 [[entry]]
-name = "Invalid rule - no type"
 path = "/some/path"
 exe = "program.exe"
 
 [[entry]]
 type = "StartOne"
-name = "Invalid rule - no exe"
 path = "/some/path"
 
 [[entry]]
 type = "StartOne"
-name = "One exec - No arg A"
 path = "/some/path"
 exe = "program.exe"
 
 [[entry]]
 type = "StartOne"
-name = "One exec - No arg B"
 path = "/some/path"
 exe = "program.exe"
 args = []
 
 [[entry]]
 type = "StartOne"
-name = "One exec - One arg A"
 path = "/some/path"
 exe = "program.exe"
 args = "arg"
 
 [[entry]]
 type = "StartOne"
-name = "One exec - One arg B"
 path = "/some/path"
 exe = "program.exe"
 args = ["arg"]
 
 [[entry]]
 type = "StartOne"
-name = "One exec - Multiple args"
 path = "/some/path"
 exe = "program.exe"
 args = ["arg1", "arg2"]
 
 [[entry]]
 type = "StartMany"
-name = "Multiple exec - One arg A"
 path = "/some/path"
 exe = "program.exe"
 args = ["argA1", "argB1"]
 
 [[entry]]
 type = "StartMany"
-name = "Multiple exec - One arg B"
 path = "/some/path"
 exe = "program.exe"
 args = [["argA1", "argB1"]]
 
 [[entry]]
 type = "StartMany"
-name = "Multiple exec - Multiple args"
 path = "/some/path"
 exe = "program.exe"
 args = [["argA1", "argA2"], ["argB1", "argB2"]]
 
 [[entry]]
 type = "StartMany"
-name = "Multiple exec - Mixed"
 path = "/some/path"
 exe = "program.exe"
 args = [["argA1", "argA2"], ["argB1"], "argC1"]

@@ -42,16 +42,14 @@ class Entry:
     def __init__(
         self,
         type: EntryType,
-        name: str | None,
-        path: str | None,
         exe: str,
+        path: str | None,
         args: list | None,
         cwd: str | None,
     ) -> None:
         self.type: EntryType = type  # Mandatory
-        self.name: str | None = name  # Optionnal
-        self.path: str | None = path  # Optionnal ?
         self.exe: str = exe  # Mandatory
+        self.path: str | None = path  # Optionnal ?
         self.args: list | None = args  # Mandatory for StartMany
         self.cwd: str | None = cwd  # Optionnal
 
@@ -62,22 +60,21 @@ class Entry:
         if type == EntryType.Unknown:
             raise Exception(f"Unknown type : {type_str}")
 
+        exe = utils.get_key(data, "exe", str, True)
+        path = utils.get_key(data, "path", str)
+
         args = data.get("args")
         if type == EntryType.StartOne:
             args = utils.process_args(args)
         elif type == EntryType.StartMany:
             args = utils.process_args_list(args)
 
-        name = utils.get_key(data, "name", str)
-        path = utils.get_key(data, "path", str)
-        exe = utils.get_key(data, "exe", str, True)
         cwd = utils.get_key(data, "cwd", str)
 
-        return Entry(type, name, path, exe, args, cwd)  # type: ignore
+        return Entry(type, exe, path, args, cwd)  # type: ignore
 
     def __str__(self) -> str:
         return f"""type = {self.type}
-name = {self.name}
 path = {self.path}
 exe  = {self.exe}
 args = {self.args}
