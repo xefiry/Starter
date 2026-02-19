@@ -52,7 +52,7 @@ class Entry:
         self.name: str | None = name  # Optionnal
         self.path: str | None = path  # Optionnal ?
         self.exe: str = exe  # Mandatory
-        self.args: list | None = args  # Mandatory for StartOne/StartMany
+        self.args: list | None = args  # Mandatory for StartMany
         self.cwd: str | None = cwd  # Optionnal
 
     @staticmethod
