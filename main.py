@@ -49,14 +49,14 @@ class Entry:
         args: list,
         cwd: str | None,
         threshold: int,
-        wait_before: int,
-        wait_after: int,
+        wait_before: float,
+        wait_after: float,
     ) -> None:
-        self.type: EntryType = type  # Mandatory
-        self.exe: str = exe  # Mandatory
-        self.path: str | None = path  # Optionnal ?
-        self.args: list = args  # Mandatory for StartMany
-        self.cwd: str | None = cwd  # Optionnal
+        self.type: EntryType = type
+        self.exe: str = exe
+        self.path: str | None = path
+        self.args: list = args
+        self.cwd: str | None = cwd
         self.threshold: int = threshold
         self.wait_before: float = wait_before
         self.wait_after: float = wait_after
@@ -112,19 +112,18 @@ class Entry:
 
     def start_it(self):
         nb_proc = len(utils.get_proc_list(self.exe))
+
         if nb_proc > self.threshold:
             print(f"{self.exe:20} -> already running")
-            return
 
-        if self.type == EntryType.StartOne:
-            utils.do_run(self.exe, self.path, self.args, self.cwd)
-        elif self.type == EntryType.StartMany:
-            for args in self.args:
-                utils.do_run(self.exe, self.path, args, self.cwd)
+        else:
+            if self.type == EntryType.StartOne:
+                utils.do_run(self.exe, self.path, self.args, self.cwd)
+            elif self.type == EntryType.StartMany:
+                for args in self.args:
+                    utils.do_run(self.exe, self.path, args, self.cwd)
 
-        subprocess.Popen
-
-        print(f"{self.exe:20} -> started")
+            print(f"{self.exe:20} -> started")
 
     def __str__(self) -> str:
         result = f"type = {self.type}"
