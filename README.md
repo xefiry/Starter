@@ -105,7 +105,7 @@ Example : if set to 2, it will start the execuable even if it is running 2 times
 
 float, optionnal
 
-How much time, in seconds, wait before running/stopping the executable 
+How much time, in seconds, wait before running/stopping the executable
 
 ### wait_after
 
