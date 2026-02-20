@@ -79,7 +79,11 @@ class Entry:
             args = utils.process_args_list(args)
 
         cwd = utils.get_key(data, "cwd", str)
-        cwd = utils.norm_path(cwd)  # type: ignore
+        # if not defined, use the same as path
+        if cwd is None:
+            cwd = path
+        else:
+            cwd = utils.norm_path(cwd)  # type: ignore
 
         threshold = utils.get_key(data, "threshold", int, default_value=0)
         wait_before = utils.get_key(data, "wait_before", float, default_value=0.0)

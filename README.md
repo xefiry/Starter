@@ -84,7 +84,7 @@ The executable to start/stop. Do not include the path to the executable, otherwi
 
 string, optionnal
 
-The path for the executable. Environment variables are managed (example: %AppData% for Windows)
+The path for the executable. Environment variables are managed (example: %AppData% for Windows).
 
 ### args
 
@@ -115,7 +115,9 @@ Examples :
 
 str, optionnal, unused for Stop
 
-Set the curent working directory.
+Set the curent working directory. Environment variables are managed (example: %AppData% for Windows).
+
+If not set, the value of path will be used.
 
 ### threshold
 
