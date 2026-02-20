@@ -2,6 +2,8 @@ import os
 
 
 def norm_path(path: str | None) -> str | None:
+    """Expand variables and normalize path. If Null is given, null will be returned."""
+
     if path is None:
         return None
     else:
@@ -11,6 +13,23 @@ def norm_path(path: str | None) -> str | None:
 def get_key(
     data: dict, key: str, expected_type: type, mandatory: bool = False
 ) -> object:
+    """Get key from a dict.
+
+    Args:
+        data (dict): The dict to retrieve from.
+        key (str): The key to retrieve.
+        expected_type (type): The expected type for the result.
+        mandatory (bool, optional): Is the value mandator. Defaults to False.\n
+            If true, raises exception in case of value not found.\n
+            If false, allows return of None.
+
+    Raises:
+        KeyError: If the key is not found (and mandatory is True).
+        TypeError: If the value found is not of expected_type.
+
+    Returns:
+        object: The value found.
+    """
     result = data.get(key)
 
     # if result is mandatory, it can't be None
@@ -25,13 +44,13 @@ def get_key(
 
 
 def is_str_list(input_list: list) -> bool:
-    """Check if the given list is a string list
+    """Check if the given list is a string list.
 
     Args:
-        input_list (list): A list to check
+        input_list (list): A list to check.
 
     Returns:
-        bool: True if the list contains only strings (str) or is empty
+        bool: True if the list contains only strings (str) or is empty.
     """
     for item in input_list:
         if not isinstance(item, str):
@@ -40,16 +59,16 @@ def is_str_list(input_list: list) -> bool:
 
 
 def process_args(input: list[str] | str | None) -> list[str]:
-    """Processes an input into a list of arguments usable by subprocess.run/subprocess.Popen
+    """Processes an input into a list of arguments usable by subprocess.run/subprocess.Popen.
 
     Args:
-        input (list[str] | str | None): the input to be processed
+        input (list[str] | str | None): The input to be processed.
 
     Raises:
-        TypeError: if the input contains invalid type
+        TypeError: If the input contains invalid type.
 
     Returns:
-        list[str]: the processed list, ready to be used by subprocess.run/subprocess.Popen
+        list[str]: The processed list, ready to be used by subprocess.run/subprocess.Popen.
 
     Examples:
         process_args(null) = []
@@ -74,10 +93,10 @@ def process_args(input: list[str] | str | None) -> list[str]:
 
 def process_args_list(input) -> list[list[str]]:
     """Processes an input into a list of list of arguments usable to loop
-    and call by subprocess.run/subprocess.Popen
+    and call by subprocess.run/subprocess.Popen.
 
     Returns:
-        list[list[str]]: the processed list, ready to be looped to use by subprocess.run/subprocess.Popen
+        list[list[str]]: The processed list, ready to be looped to use by subprocess.run/subprocess.Popen.
 
     Examples:
     process_args_list(["argA1", "argB1"]) = [["argA1"], ["argB1"]]
