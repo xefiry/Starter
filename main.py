@@ -92,16 +92,10 @@ class Entry:
         return Entry(type, exe, path, args, cwd, threshold, wait_before, wait_after)  # type: ignore
 
     def run(self):
-        if self.wait_before > 0:
-            time.sleep(self.wait_before)
-
         if self.type in [EntryType.StartOne, EntryType.StartMany]:
             self.start_it()
         elif self.type == EntryType.Stop:
             self.stop_it()
-
-        if self.wait_after > 0:
-            time.sleep(self.wait_after)
 
     def stop_it(self):
         proc_list = utils.get_proc_list(self.exe)
@@ -120,6 +114,9 @@ class Entry:
             print(f"{self.exe:20} -> already running {nb_proc} time(s)")
 
         else:
+            if self.wait_before > 0:
+                time.sleep(self.wait_before)
+
             if self.type == EntryType.StartOne:
                 utils.do_run(self.exe, self.path, self.args, self.cwd)
                 print(f"{self.exe:20} -> started")
@@ -128,6 +125,9 @@ class Entry:
                 for nb, args in enumerate(self.args):
                     utils.do_run(self.exe, self.path, args, self.cwd)
                     print(f"{self.exe:20} -> started (args {nb + 1})")
+
+            if self.wait_after > 0:
+                time.sleep(self.wait_after)
 
     def __str__(self) -> str:
         result = f"type = {self.type}"
