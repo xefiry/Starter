@@ -36,6 +36,36 @@ def test_get_key_exceptions(key, type, expected):
 
 
 @pytest.mark.parametrize(
+    "key,type,default,expected",
+    [
+        ("a", bool, False, True),
+        ("b", int, 0, 6),
+        ("c", float, 999.4, 3.14),
+        ("d", str, "no", "xxx"),
+        ("e", int, 99, 99),
+        ("e", bool, False, False),
+    ],
+)
+def test_get_key_with_default_value(key, type, default, expected):
+    assert utils.get_key(DICT_DATA, key, type, default_value=default) == expected
+
+
+@pytest.mark.parametrize(
+    "key,type,default",
+    [
+        ("a", str, 9),
+        ("b", bool, "nope"),
+        ("c", str, False),
+        ("d", float, "nope"),
+        ("e", int, "nope"),
+    ],
+)
+def test_get_key_exceptions_with_default_value(key, type, default):
+    with pytest.raises(TypeError):
+        utils.get_key(DICT_DATA, key, type, default_value=default)
+
+
+@pytest.mark.parametrize(
     "input,expected",
     [
         ([], True),

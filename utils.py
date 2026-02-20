@@ -11,7 +11,11 @@ def norm_path(path: str | None) -> str | None:
 
 
 def get_key(
-    data: dict, key: str, expected_type: type, mandatory: bool = False
+    data: dict,
+    key: str,
+    expected_type: type,
+    mandatory: bool = False,
+    default_value: object = None,
 ) -> object:
     """Get key from a dict.
 
@@ -22,6 +26,8 @@ def get_key(
         mandatory (bool, optional): Is the value mandator. Defaults to False.\n
             If true, raises exception in case of value not found.\n
             If false, allows return of None.
+        default_value (object, optional): If set, and result is None, replace it with default_value.\n
+            Makes mandatory param redundant. Defaults to None.
 
     Raises:
         KeyError: If the key is not found (and mandatory is True).
@@ -32,9 +38,15 @@ def get_key(
     """
     result = data.get(key)
 
-    # if result is mandatory, it can't be None
-    if result is None and mandatory:
-        raise KeyError(f"Key {key} was not found")
+    # If key has no value
+    if result is None:
+        # if we ask for a default value, we use it
+        if default_value is not None:
+            result = default_value
+
+        # if a value is mandatory, error
+        elif mandatory:
+            raise KeyError(f"Key {key} was not found")
 
     # if result is not of expected type (and not None)
     if result is not None and not isinstance(result, expected_type):
