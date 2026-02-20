@@ -6,11 +6,35 @@ An executable starter/stopper written in python.
 
 Configuration is done in config.toml. It contains a list of entries describing the executable to start/stop.
 
-Here is a skeleton of an entry with all the available parameters.
-
-See example_config.toml for some examples.
+Here are a few examples.
 
 ```toml
+# StartOne entry with the minimum parameters required
+[[entry]]
+type = "StartOne"
+exe = "program.exe"
+
+# StartMany entry with the minimum parameters required
+# if args is an empty list (args = []) it will do nothing
+# here it will star once
+[[entry]]
+type = "StartMany"
+exe = "program.exe"
+args  = [[]]
+
+# You can start the executable multiple times without arguments
+# here, it will start twice
+[[entry]]
+type = "StartMany"
+exe = "program.exe"
+args  = [[], []]
+
+# Stop entry with the minimum parameters required
+[[entry]]
+type = "Stop"
+exe = "program.exe"
+
+# StartOne entry with all the available parameters
 [[entry]]
 type = "StartOne"
 exe = "program.exe",
@@ -21,16 +45,18 @@ threshold = 2
 wait_before = 1.2
 wait_after = 2.8
 
+# StartMany entry with all the available parameters
 [[entry]]
 type = "StartMany"
 exe = "program.exe"
 path = "/some/path"
-args = [["argA1", "argA2"], ["argB1", "argB2"]]
+args = [["argA1", "argA2"], ["argB1", "argB2"], "argC1"]
 cwd = "%var%/directory"
 threshold = 2
 wait_before = 1.2
 wait_after = 2.8
 
+# Stop entry with all the available parameters
 [[entry]]
 type = "Stop"
 exe = "program.exe"
