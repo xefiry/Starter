@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import os
+import subprocess
+import time
 import tomllib
 from enum import Enum
-
-import psutil
 
 import utils
 
@@ -47,7 +46,7 @@ class Entry:
         type: EntryType,
         exe: str,
         path: str | None,
-        args: list | None,
+        args: list,
         cwd: str | None,
         threshold: int,
         wait_before: int,
@@ -56,7 +55,7 @@ class Entry:
         self.type: EntryType = type  # Mandatory
         self.exe: str = exe  # Mandatory
         self.path: str | None = path  # Optionnal ?
-        self.args: list | None = args  # Mandatory for StartMany
+        self.args: list = args  # Mandatory for StartMany
         self.cwd: str | None = cwd  # Optionnal
         self.threshold: int = threshold
         self.wait_before: float = wait_before
@@ -90,10 +89,16 @@ class Entry:
         return Entry(type, exe, path, args, cwd, threshold, wait_before, wait_after)  # type: ignore
 
     def run(self):
+        if self.wait_before > 0:
+            time.sleep(self.wait_before)
+
         if self.type in [EntryType.StartOne, EntryType.StartMany]:
-            print("TODO")
+            self.start_it()
         elif self.type == EntryType.Stop:
             self.stop_it()
+
+        if self.wait_after > 0:
+            time.sleep(self.wait_after)
 
     def stop_it(self):
         proc_list = utils.get_proc_list(self.exe)
@@ -103,7 +108,7 @@ class Entry:
         else:
             for proc in proc_list:
                 print(f"{proc.name():20} -> terminated ({proc.pid:5})")
-                # p.terminate() # TODO: uncomment
+                proc.terminate()
 
     def start_it(self):
         nb_proc = len(utils.get_proc_list(self.exe))
@@ -111,23 +116,15 @@ class Entry:
             print(f"{self.exe:20} -> already running")
             return
 
-        if self.path is not None:
-            exe_path = os.path.join(self.path, self.exe)
-        else:
-            exe_path = self.exe
-
         if self.type == EntryType.StartOne:
-            print("TODO")
+            utils.do_run(self.exe, self.path, self.args, self.cwd)
         elif self.type == EntryType.StartMany:
-            print("TODO")
+            for args in self.args:
+                utils.do_run(self.exe, self.path, args, self.cwd)
 
-        if len(self.args) != 0:
-            for param in self.param:
-                run_it(args=[exe_path, param])
-        else:
-            run_it(args=[exe_path])
+        subprocess.Popen
 
-        print(f"{entry.exe:20} -> started")
+        print(f"{self.exe:20} -> started")
 
     def __str__(self) -> str:
         result = f"type = {self.type}"
@@ -139,7 +136,6 @@ class Entry:
             result += f"\nargs = {self.args}"
         if self.cwd is not None:
             result += f"\ncwd  = {self.cwd}"
-
         if self.threshold != 0:
             result += f"\nthreshold = {self.threshold}"
         if self.wait_before != 0:
@@ -157,9 +153,7 @@ def main():
     for nb, data in enumerate(toml_data["entry"]):
         try:
             entry = Entry.from_toml(data)
-            print(entry)
             entry.run()
-            print()
         except Exception as e:
             print(f"Error in rule {nb} : {e}\n")
 

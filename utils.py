@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 import psutil
 
@@ -14,6 +15,17 @@ def norm_path(path: str | None) -> str | None:
 
 def get_proc_list(exe: str) -> list[psutil.Process]:
     return [x for x in psutil.process_iter(["name"]) if x.info["name"] == exe]
+
+
+def do_run(exe: str, path: str | None, args: list[str], cwd: str | None):
+    if path is not None:
+        exe_path = os.path.join(path, exe)
+    else:
+        exe_path = exe
+
+    arg_list = [exe_path] + args
+
+    subprocess.Popen(args=arg_list, cwd=cwd, stdout=subprocess.DEVNULL)
 
 
 def get_key(
