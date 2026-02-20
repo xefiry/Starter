@@ -106,23 +106,24 @@ class Entry:
             print(f"{self.exe:20} -> not running")
         else:
             for proc in proc_list:
-                print(f"{proc.name():20} -> terminated ({proc.pid:5})")
+                print(f"{proc.name():20} -> terminated (PID {proc.pid:5})")
                 proc.terminate()
 
     def start_it(self):
         nb_proc = len(utils.get_proc_list(self.exe))
 
         if nb_proc > self.threshold:
-            print(f"{self.exe:20} -> already running")
+            print(f"{self.exe:20} -> already running {nb_proc} time(s)")
 
         else:
             if self.type == EntryType.StartOne:
                 utils.do_run(self.exe, self.path, self.args, self.cwd)
-            elif self.type == EntryType.StartMany:
-                for args in self.args:
-                    utils.do_run(self.exe, self.path, args, self.cwd)
+                print(f"{self.exe:20} -> started")
 
-            print(f"{self.exe:20} -> started")
+            elif self.type == EntryType.StartMany:
+                for nb, args in enumerate(self.args):
+                    utils.do_run(self.exe, self.path, args, self.cwd)
+                    print(f"{self.exe:20} -> started (args {nb + 1})")
 
     def __str__(self) -> str:
         result = f"type = {self.type}"
