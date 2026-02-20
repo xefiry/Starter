@@ -1,5 +1,7 @@
 import os
 
+import psutil
+
 
 def norm_path(path: str | None) -> str | None:
     """Expand variables and normalize path. If Null is given, null will be returned."""
@@ -8,6 +10,10 @@ def norm_path(path: str | None) -> str | None:
         return None
     else:
         return os.path.normpath(os.path.expandvars(path))
+
+
+def get_proc_list(exe: str) -> list[psutil.Process]:
+    return [x for x in psutil.process_iter(["name"]) if x.info["name"] == exe]
 
 
 def get_key(

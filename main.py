@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import os
 import tomllib
 from enum import Enum
+
+import psutil
 
 import utils
 
@@ -86,23 +89,63 @@ class Entry:
 
         return Entry(type, exe, path, args, cwd, threshold, wait_before, wait_after)  # type: ignore
 
-    def __str__(self) -> str:
-        result = f"type = {self.type}\n"
-        result += f"exe  = {self.exe}\n"
+    def run(self):
+        if self.type in [EntryType.StartOne, EntryType.StartMany]:
+            print("TODO")
+        elif self.type == EntryType.Stop:
+            self.stop_it()
+
+    def stop_it(self):
+        proc_list = utils.get_proc_list(self.exe)
+
+        if len(proc_list) == 0:
+            print(f"{self.exe:20} -> not running")
+        else:
+            for proc in proc_list:
+                print(f"{proc.name():20} -> terminated ({proc.pid:5})")
+                # p.terminate() # TODO: uncomment
+
+    def start_it(self):
+        nb_proc = len(utils.get_proc_list(self.exe))
+        if nb_proc > self.threshold:
+            print(f"{self.exe:20} -> already running")
+            return
 
         if self.path is not None:
-            result += f"path = {self.path}\n"
+            exe_path = os.path.join(self.path, self.exe)
+        else:
+            exe_path = self.exe
+
+        if self.type == EntryType.StartOne:
+            print("TODO")
+        elif self.type == EntryType.StartMany:
+            print("TODO")
+
+        if len(self.args) != 0:
+            for param in self.param:
+                run_it(args=[exe_path, param])
+        else:
+            run_it(args=[exe_path])
+
+        print(f"{entry.exe:20} -> started")
+
+    def __str__(self) -> str:
+        result = f"type = {self.type}"
+        result += f"\nexe  = {self.exe}"
+
+        if self.path is not None:
+            result += f"\npath = {self.path}"
         if self.args is not None:
-            result += f"args = {self.args}\n"
+            result += f"\nargs = {self.args}"
         if self.cwd is not None:
-            result += f"cwd  = {self.cwd}\n"
+            result += f"\ncwd  = {self.cwd}"
 
         if self.threshold != 0:
-            result += f"threshold = {self.threshold}\n"
+            result += f"\nthreshold = {self.threshold}"
         if self.wait_before != 0:
-            result += f"wait_before = {self.wait_before}\n"
+            result += f"\nwait_before = {self.wait_before}"
         if self.wait_after != 0:
-            result += f"wait_after = {self.wait_after}\n"
+            result += f"\nwait_after = {self.wait_after}"
 
         return result
 
@@ -115,6 +158,8 @@ def main():
         try:
             entry = Entry.from_toml(data)
             print(entry)
+            entry.run()
+            print()
         except Exception as e:
             print(f"Error in rule {nb} : {e}\n")
 
