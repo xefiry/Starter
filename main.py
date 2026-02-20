@@ -145,8 +145,12 @@ class Entry:
 
 
 def main():
-    with open("config.toml", "rb") as f:
-        toml_data = tomllib.load(f)
+    try:
+        with open("config.toml", "rb") as f:
+            toml_data = tomllib.load(f)
+    except FileNotFoundError:
+        print("config.toml not found")
+        exit(-1)
 
     for nb, data in enumerate(toml_data["entry"]):
         try:
