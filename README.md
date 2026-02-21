@@ -1,10 +1,29 @@
 # Starter
 
-An executable starter/stopper written in python.
+An executable starter/stopper written in python. Uses a toml configuration file.
+
+## Arguments
+
+```plain
+usage: main.py [-h] [-v] [-d] [-s N] [config_file]
+
+positional arguments:
+  config_file    config file to use (default: config.toml)
+
+options:
+  -h, --help     show this help message and exit
+  -v, --verbose  verbose mode
+  -d, --dry_run  dry run (nothing done, only printing)
+  -s, --sleep N  sleep for N seconds at the end
+```
 
 ## Configuration
 
-Configuration is done in config.toml. It contains a list of entries describing the executable to start/stop.
+Configuration is read from a toml file (by default config.toml).
+
+It contains a list of entries describing the executable to start/stop.
+
+If an executable is already running, it will not be started unless threshold is set.
 
 Here are a few examples.
 
@@ -139,4 +158,4 @@ How much time, in seconds, wait before running/stopping the executable
 
 float, optionnal
 
-How much time, in seconds, wait after running/stopping the executable  
+How much time, in seconds, wait after running/stopping the executable

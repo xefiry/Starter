@@ -3,7 +3,11 @@ from __future__ import annotations
 import time
 from enum import Enum
 
+import arguments
 import utils
+
+VERBOSE = arguments.cli_args.verbose
+DRY_RUN = arguments.cli_args.dry_run
 
 
 class EntryType(Enum):
@@ -103,29 +107,45 @@ class Entry:
             print(f"{self.exe:20} -> not running")
         else:
             for proc in proc_list:
-                print(f"{proc.name():20} -> terminated (PID {proc.pid:5})")
-                proc.terminate()
+                if VERBOSE:
+                    info = f" (PID {proc.pid:5})"
+                else:
+                    info = ""
+                print(f"{proc.name():20} -> terminated{info}")
+
+                if not DRY_RUN:
+                    proc.terminate()
 
     def start_it(self):
         nb_proc = len(utils.get_proc_list(self.exe))
 
         if nb_proc > self.threshold:
-            print(f"{self.exe:20} -> already running {nb_proc} time(s)")
+            if VERBOSE:
+                info = f" {nb_proc} time(s)"
+            else:
+                info = ""
+            print(f"{self.exe:20} -> already running{info}")
 
         else:
-            if self.wait_before > 0:
+            if self.wait_before > 0 and not DRY_RUN:
                 time.sleep(self.wait_before)
 
             if self.type == EntryType.StartOne:
-                utils.do_run(self.exe, self.path, self.args, self.cwd)
+                if VERBOSE:
+                    print(self.path, self.exe, self.args)
+                if not DRY_RUN:
+                    utils.do_run(self.exe, self.path, self.args, self.cwd)
                 print(f"{self.exe:20} -> started")
 
             elif self.type == EntryType.StartMany:
                 for nb, args in enumerate(self.args):
-                    utils.do_run(self.exe, self.path, args, self.cwd)
+                    if VERBOSE:
+                        print(self.path, self.exe, args)
+                    if not DRY_RUN:
+                        utils.do_run(self.exe, self.path, args, self.cwd)
                     print(f"{self.exe:20} -> started (args {nb + 1})")
 
-            if self.wait_after > 0:
+            if self.wait_after > 0 and not DRY_RUN:
                 time.sleep(self.wait_after)
 
     def __str__(self) -> str:
