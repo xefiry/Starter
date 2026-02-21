@@ -56,7 +56,7 @@ exe = "program.exe"
 # StartOne entry with all the available parameters
 [[entry]]
 type = "StartOne"
-exe = "program.exe",
+exe = "program.exe"
 path = "%var%/directory"
 args = ["args"]
 cwd = "%var%/directory"
