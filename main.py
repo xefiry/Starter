@@ -1,21 +1,21 @@
 import time
-import tomllib
 
 import arguments
+import utils
 from entry import Entry
 
 CONFIG_FILE = arguments.cli_args.config_file
 DRY_RUN = arguments.cli_args.dry_run
 SLEEP = arguments.cli_args.sleep
+VERSION = arguments.cli_args.version
 
 
 def main():
-    try:
-        with open(CONFIG_FILE, "rb") as f:
-            toml_data = tomllib.load(f)
-    except FileNotFoundError:
-        print(f"Configuration file not found : {CONFIG_FILE}")
-        exit(-1)
+    if VERSION:
+        utils.print_version()
+        exit(0)
+
+    toml_data = utils.load_toml(CONFIG_FILE)
 
     if DRY_RUN:
         print("Dry run. Print only.")

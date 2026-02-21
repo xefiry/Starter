@@ -1,7 +1,25 @@
 import os
 import subprocess
+import tomllib
+from typing import Any
 
 import psutil
+
+
+def load_toml(filepath: str) -> dict[str, Any]:
+    try:
+        with open(filepath, "rb") as f:
+            toml_data = tomllib.load(f)
+    except FileNotFoundError:
+        print(f"toml file not found : {filepath}")
+        exit(-1)
+
+    return toml_data
+
+
+def print_version():
+    toml_data = load_toml("pyproject.toml")
+    print(f"starter version {toml_data['project']['version']}")
 
 
 def norm_path(path: str | None) -> str | None:
@@ -33,8 +51,8 @@ def get_key(
     key: str,
     expected_type: type,
     mandatory: bool = False,
-    default_value: object = None,
-) -> object:
+    default_value: Any = None,
+) -> Any:
     """Get key from a dict.
 
     Args:
@@ -44,7 +62,7 @@ def get_key(
         mandatory (bool, optional): Is the value mandator. Defaults to False.\n
             If true, raises exception in case of value not found.\n
             If false, allows return of None.
-        default_value (object, optional): If set, and result is None, replace it with default_value.\n
+        default_value (Any, optional): If set, and result is None, replace it with default_value.\n
             Makes mandatory param redundant. Defaults to None.
 
     Raises:
@@ -52,7 +70,7 @@ def get_key(
         TypeError: If the value found is not of expected_type.
 
     Returns:
-        object: The value found.
+        Any: The value found.
     """
     result = data.get(key)
 
