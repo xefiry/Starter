@@ -25,7 +25,7 @@ def main():
             entry = Entry.from_toml(data)
             entry.run()
         except Exception as e:
-            print(f"Error in rule {nb} : {e}\n")
+            print(f"Error in rule {nb} : {e}")
 
     if SLEEP is not None and SLEEP > 0:
         print(f"sleeping for {SLEEP} s")
