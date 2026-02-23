@@ -20,12 +20,19 @@ def main():
     if DRY_RUN:
         print("Dry run. Print only.")
 
+    entries = []
+
+    # First, load all entries.
+    # It will ensure Entry.MAX_LENGTH to be set for later printing.
     for nb, data in enumerate(toml_data["entry"]):
         try:
-            entry = Entry.from_toml(data)
-            entry.run()
+            entries.append(Entry.from_toml(data))
         except Exception as e:
-            print(f"Error in rule {nb} : {e}")
+            print(f"Error loading entry {nb} : {e}")
+
+    # Then execute all entries
+    for entry in entries:
+        entry.run()
 
     if SLEEP is not None and SLEEP > 0:
         print(f"sleeping for {SLEEP} s")

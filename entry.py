@@ -43,6 +43,8 @@ class EntryType(Enum):
 
 
 class Entry:
+    MAX_LENGTH: int = 0
+
     def __init__(
         self,
         type: EntryType,
@@ -63,6 +65,10 @@ class Entry:
         self.wait_before: float = wait_before
         self.wait_after: float = wait_after
 
+        # update max exe length for later printing
+        if Entry.MAX_LENGTH < len(self.exe):
+            Entry.MAX_LENGTH = len(self.exe)
+
     @staticmethod
     def from_toml(data: dict) -> Entry:
         type_str = str(utils.get_key(data, "type", str, True))
@@ -77,7 +83,7 @@ class Entry:
 
         args = data.get("args")
         if type == EntryType.StartOne:
-            args = utils.process_args(args)
+            args = [utils.process_args(args)]
         elif type == EntryType.StartMany:
             args = utils.process_args_list(args)
 
@@ -96,54 +102,57 @@ class Entry:
 
     def run(self):
         if self.type in [EntryType.StartOne, EntryType.StartMany]:
-            self.start_it()
+            self.start()
         elif self.type == EntryType.Stop:
-            self.stop_it()
+            self.stop()
 
-    def stop_it(self):
+    def stop(self):
         proc_list = utils.get_proc_list(self.exe)
 
         if len(proc_list) == 0:
-            print(f"{self.exe:20} -> not running")
+            print(f"{self.exe.ljust(Entry.MAX_LENGTH, ' ')} -> not running")
         else:
             for proc in proc_list:
+                exe_name = proc.name().ljust(Entry.MAX_LENGTH, " ")
                 if VERBOSE:
-                    info = f" (PID {proc.pid:5})"
+                    info = f" (PID {proc.pid})"
                 else:
                     info = ""
-                print(f"{proc.name():20} -> terminated{info}")
 
+                result = "terminated"
                 if not DRY_RUN:
-                    proc.terminate()
+                    try:
+                        proc.terminate()
+                    except Exception:
+                        result = "ERROR: could not terminate"
 
-    def start_it(self):
+                print(f"{exe_name} -> {result}{info}")
+
+    def start(self):
         nb_proc = len(utils.get_proc_list(self.exe))
+        exe_name = self.exe.ljust(Entry.MAX_LENGTH, " ")
 
         if nb_proc > self.threshold:
             if VERBOSE:
                 info = f" {nb_proc} time(s)"
             else:
                 info = ""
-            print(f"{self.exe:20} -> already running{info}")
+            print(f"{exe_name} -> already running{info}")
 
         else:
             if self.wait_before > 0 and not DRY_RUN:
                 time.sleep(self.wait_before)
 
-            if self.type == EntryType.StartOne:
+            for args in self.args:
+                result = "started"
                 if VERBOSE:
-                    print(self.path, self.exe, self.args)
+                    print(self.path, self.exe, args)
                 if not DRY_RUN:
-                    utils.do_run(self.exe, self.path, self.args, self.cwd)
-                print(f"{self.exe:20} -> started")
-
-            elif self.type == EntryType.StartMany:
-                for nb, args in enumerate(self.args):
-                    if VERBOSE:
-                        print(self.path, self.exe, args)
-                    if not DRY_RUN:
+                    try:
                         utils.do_run(self.exe, self.path, args, self.cwd)
-                    print(f"{self.exe:20} -> started (args {nb + 1})")
+                    except Exception as e:
+                        result = f"ERROR: {e}"
+                print(f"{exe_name} -> {result}")
 
             if self.wait_after > 0 and not DRY_RUN:
                 time.sleep(self.wait_after)
