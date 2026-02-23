@@ -18,6 +18,8 @@ options:
   -s, --sleep N  sleep for N seconds at the end
 ```
 
+TIP: use -dv after updating your configuration file to check what would be started/stopped.
+
 ## Configuration
 
 Configuration is read from a toml file (by default config.toml).
