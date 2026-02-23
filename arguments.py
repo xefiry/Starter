@@ -10,6 +10,7 @@ _parser.add_argument(
 )
 
 _parser.add_argument(
+    "-V",
     "--version",
     action="store_true",
     help="print version and exit",
