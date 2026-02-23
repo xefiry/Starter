@@ -5,14 +5,14 @@ An executable starter/stopper written in python. Uses a toml configuration file.
 ## Arguments
 
 ```plain
-usage: main.py [-h] [--version] [-v] [-d] [-s N] [config_file]
+usage: main.py [-h] [-V] [-v] [-d] [-s N] [config_file]
 
 positional arguments:
   config_file    config file to use (default: config.toml)
 
 options:
   -h, --help     show this help message and exit
-  --version      print version and exit
+  -V, --version  print version and exit
   -v, --verbose  verbose mode
   -d, --dry_run  dry run (nothing done, only printing)
   -s, --sleep N  sleep for N seconds at the end
