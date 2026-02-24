@@ -5,20 +5,21 @@ An executable starter/stopper written in python. Uses a toml configuration file.
 ## Arguments
 
 ```plain
-usage: main.py [-h] [-V] [-v] [-d] [-s N] [config_file]
+usage: main.py [-h] [-V] [-v] [-d] [-f] [-s N] [config_file]
 
 positional arguments:
   config_file    config file to use (default: config.toml)
 
 options:
   -h, --help     show this help message and exit
-  -V, --version  print version and exit
+  -V, --version  show version number and exit
   -v, --verbose  verbose mode
   -d, --dry_run  dry run (nothing done, only printing)
+  -f, --force    do not check if executables are already running
   -s, --sleep N  sleep for N seconds at the end
 ```
 
-TIP: use -dv after updating your configuration file to check what would be started/stopped.
+TIP: Use -vdf arguments after updating your configuration file to list all the entries and check for errors.
 
 ## Configuration
 

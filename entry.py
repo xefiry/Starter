@@ -6,8 +6,9 @@ from enum import Enum
 import arguments
 import utils
 
-VERBOSE = arguments.cli_args.verbose
-DRY_RUN = arguments.cli_args.dry_run
+VERBOSE: bool = arguments.cli_args.verbose
+DRY_RUN: bool = arguments.cli_args.dry_run
+FORCE: bool = arguments.cli_args.force
 
 
 class EntryType(Enum):
@@ -132,7 +133,7 @@ class Entry:
         nb_proc = len(utils.get_proc_list(self.exe))
         exe_name = self.exe.ljust(Entry.MAX_LENGTH, " ")
 
-        if nb_proc > self.threshold:
+        if nb_proc > self.threshold and not FORCE:
             if VERBOSE:
                 info = f" {nb_proc} time(s)"
             else:

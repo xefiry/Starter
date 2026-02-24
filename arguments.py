@@ -13,7 +13,7 @@ _parser.add_argument(
     "-V",
     "--version",
     action="store_true",
-    help="print version and exit",
+    help="show version number and exit",
 )
 
 _parser.add_argument(
@@ -28,6 +28,13 @@ _parser.add_argument(
     "--dry_run",
     action="store_true",
     help="dry run (nothing done, only printing)",
+)
+
+_parser.add_argument(
+    "-f",
+    "--force",
+    action="store_true",
+    help="do not check if executables are already running",
 )
 
 _parser.add_argument(

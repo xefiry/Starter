@@ -4,10 +4,10 @@ import arguments
 import utils
 from entry import Entry
 
-CONFIG_FILE = arguments.cli_args.config_file
-DRY_RUN = arguments.cli_args.dry_run
-SLEEP = arguments.cli_args.sleep
-VERSION = arguments.cli_args.version
+CONFIG_FILE: str = arguments.cli_args.config_file
+DRY_RUN: bool = arguments.cli_args.dry_run
+SLEEP: int = arguments.cli_args.sleep
+VERSION: bool = arguments.cli_args.version
 
 
 def main():
