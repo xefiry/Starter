@@ -67,6 +67,7 @@ cwd = "%var%/directory"
 threshold = 2
 wait_before = 1.2
 wait_after = 2.8
+cli_mode = true
 
 # StartMany entry with all the available parameters
 [[entry]]
@@ -78,6 +79,7 @@ cwd = "%var%/directory"
 threshold = 2
 wait_before = 1.2
 wait_after = 2.8
+cli_mode = true
 
 # Stop entry with all the available parameters
 [[entry]]
@@ -163,3 +165,11 @@ How much time, in seconds, wait before running/stopping the executable
 float, optionnal
 
 How much time, in seconds, wait after running/stopping the executable
+
+### cli_mode
+
+bool, optionnal, unused for Stop
+
+If set to false or not set, executable will be started in non blocking mode (not waiting for it to end to continue) and the standard output will be suppressed.
+
+If set to true, executable will be started in blocking mode (waiting for it to end to continue) and the standard output will be displayed.

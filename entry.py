@@ -56,6 +56,7 @@ class Entry:
         threshold: int,
         wait_before: float,
         wait_after: float,
+        cli_mode: bool,
     ) -> None:
         self.type: EntryType = type
         self.exe: str = exe
@@ -65,6 +66,7 @@ class Entry:
         self.threshold: int = threshold
         self.wait_before: float = wait_before
         self.wait_after: float = wait_after
+        self.cli_mode: bool = cli_mode
 
         # update max exe length for later printing
         if Entry.MAX_LENGTH < len(self.exe):
@@ -98,8 +100,19 @@ class Entry:
         threshold = utils.get_key(data, "threshold", int, default_value=0)
         wait_before = utils.get_key(data, "wait_before", float, default_value=0.0)
         wait_after = utils.get_key(data, "wait_after", float, default_value=0.0)
+        cli_mode = utils.get_key(data, "cli_mode", bool, default_value=False)
 
-        return Entry(type, exe, path, args, cwd, threshold, wait_before, wait_after)  # type: ignore
+        return Entry(
+            type,
+            exe,
+            path,
+            args,  # type: ignore
+            cwd,
+            threshold,
+            wait_before,
+            wait_after,
+            cli_mode,
+        )
 
     def run(self):
         if self.type in [EntryType.StartOne, EntryType.StartMany]:
@@ -145,12 +158,13 @@ class Entry:
                 time.sleep(self.wait_before)
 
             for args in self.args:
-                result = "started"
+                result = "done" if self.cli_mode else "started"
+
                 if VERBOSE:
                     print(self.path, self.exe, args)
                 if not DRY_RUN:
                     try:
-                        utils.do_run(self.exe, self.path, args, self.cwd)
+                        utils.do_run(self.exe, self.path, args, self.cwd, self.cli_mode)
                     except Exception as e:
                         result = f"ERROR: {e}"
                 print(f"{exe_name} -> {result}")
@@ -174,5 +188,7 @@ class Entry:
             result += f"\nwait_before = {self.wait_before}"
         if self.wait_after != 0:
             result += f"\nwait_after = {self.wait_after}"
+        if self.cli_mode != 0:
+            result += f"\ncli_mode = {self.cli_mode}"
 
         return result

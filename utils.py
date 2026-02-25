@@ -35,7 +35,9 @@ def get_proc_list(exe: str) -> list[psutil.Process]:
     return [x for x in psutil.process_iter(["name"]) if x.info["name"] == exe]
 
 
-def do_run(exe: str, path: str | None, args: list[str], cwd: str | None):
+def do_run(
+    exe: str, path: str | None, args: list[str], cwd: str | None, cli_mode: bool
+):
     if path is not None:
         exe_path = os.path.join(path, exe)
     else:
@@ -43,7 +45,10 @@ def do_run(exe: str, path: str | None, args: list[str], cwd: str | None):
 
     arg_list = [exe_path] + args
 
-    subprocess.Popen(args=arg_list, cwd=cwd, stdout=subprocess.DEVNULL)
+    if cli_mode:
+        subprocess.run(args=arg_list, cwd=cwd)
+    else:
+        subprocess.Popen(args=arg_list, cwd=cwd, stdout=subprocess.DEVNULL)
 
 
 def get_key(
