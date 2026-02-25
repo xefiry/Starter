@@ -1,8 +1,12 @@
+import os
+
 import pytest
 
 import utils
 
 DICT_DATA = {"a": True, "b": 6, "c": 3.14, "d": "xxx"}
+os.environ["TEST_VAR_1"] = "value_1"
+os.environ["TEST_VAR_2"] = "value_2"
 
 
 @pytest.mark.parametrize(
@@ -96,6 +100,22 @@ def test_process_args(input, expected):
     assert utils.process_args(input) == expected
 
 
+@pytest.mark.parametrize(
+    "input,expected",
+    [
+        ("TEST_VAR_1", ["TEST_VAR_1"]),
+        ("%TEST_VAR_1%", ["value_1"]),
+        (["%TEST_VAR_1%"], ["value_1"]),
+        (["%TEST_VAR_2%"], ["value_2"]),
+        (["%TEST_VAR_3%"], ["%TEST_VAR_3%"]),
+        (["TEST_VAR_1", "TEST_VAR_2"], ["TEST_VAR_1", "TEST_VAR_2"]),
+        (["%TEST_VAR_1%", "%TEST_VAR_2%"], ["value_1", "value_2"]),
+    ],
+)
+def test_process_args_env(input, expected):
+    assert utils.process_args(input) == expected
+
+
 @pytest.mark.parametrize("input", [[3], 3, False])
 def test_process_args_exceptions(input):
     with pytest.raises(TypeError):
@@ -118,6 +138,23 @@ def test_process_args_exceptions(input):
     ],
 )
 def test_process_args_list(input, expected):
+    assert utils.process_args_list(input) == expected
+
+
+@pytest.mark.parametrize(
+    "input,expected",
+    [
+        (
+            ["TEST_VAR_1", "TEST_VAR_2", "TEST_VAR_3"],
+            [["TEST_VAR_1"], ["TEST_VAR_2"], ["TEST_VAR_3"]],
+        ),
+        (
+            ["%TEST_VAR_1%", "%TEST_VAR_2%", "%TEST_VAR_3%"],
+            [["value_1"], ["value_2"], ["%TEST_VAR_3%"]],
+        ),
+    ],
+)
+def test_process_args_list_env(input, expected):
     assert utils.process_args_list(input) == expected
 
 

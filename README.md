@@ -115,7 +115,7 @@ The path for the executable. Environment variables are managed (example: %AppDat
 
 str or list, optionnal for StartOne, mandatory for StartMany, unused for Stop
 
-The list of arguments to use.
+The list of arguments to use. Environment variables are managed (example: %AppData% for Windows).
 
 #### For StartOne
 

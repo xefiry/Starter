@@ -135,9 +135,10 @@ def process_args(input: list[str] | str | None) -> list[str]:
     if input is None:
         result = []
     elif isinstance(input, str):
-        result = [input]
+        result.append(os.path.expandvars(input))
     elif isinstance(input, list) and is_str_list(input):
-        result = input
+        for i in input:
+            result.append(os.path.expandvars(i))
     else:
         raise TypeError("Invalid args")
 
